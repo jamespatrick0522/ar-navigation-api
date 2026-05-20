@@ -5,7 +5,10 @@ import {
   RoomCategory,
   buildings,
   floors,
+  navigationAnchors,
   navigationDemoConfigs,
+  navigationRoutes,
+  navigationRouteSteps,
   qrEntries,
   roomCategories,
   roomGallery,
@@ -25,12 +28,12 @@ type SeedRoom = {
 };
 
 const SCHOOL_PROFILE = {
-  name: 'Phillipine Advent College',
+  name: 'Philippine Advent College',
   campusName: 'Main Campus',
   address: 'Ramon Magsaysay, Sindangan, Zamboanga del Norte',
   email: 'philippineadventcollege@gmail.com',
   contact: '(065)-224-2700/2038 | 09361116589',
-  schoolDirectoryQr: 'PHILLIPINE-ADVENT-COLLEGE-DIRECTORY',
+  schoolDirectoryQr: 'PHILIPPINE-ADVENT-COLLEGE-DIRECTORY',
 } as const;
 
 const roomSeed: SeedRoom[] = [
@@ -74,10 +77,13 @@ export class DevSeedService {
 
   async seed() {
     await this.db.delete(navigationDemoConfigs);
+    await this.db.delete(navigationRouteSteps);
+    await this.db.delete(navigationRoutes);
     await this.db.delete(roomGallery);
     await this.db.delete(roomPeople);
     await this.db.delete(qrEntries);
     await this.db.delete(rooms);
+    await this.db.delete(navigationAnchors);
     await this.db.delete(floors);
     await this.db.delete(buildings);
     await this.db.delete(roomCategories);
@@ -120,6 +126,42 @@ export class DevSeedService {
     ]).returning()) as Floor[];
 
     const floorMap = new Map<string, Floor>(insertedFloors.map((floor: Floor) => [`${floor.buildingId}-${floor.floorName}`, floor]));
+    const mainGroundFloor = floorMap.get(`${mainBuilding.id}-Ground Floor`);
+    if (!mainGroundFloor) {
+      throw new Error('Main building ground floor was not seeded');
+    }
+
+    const insertedAnchors = await this.db.insert(navigationAnchors).values([
+      {
+        code: 'MAIN_ENTRANCE',
+        name: 'Main Entrance',
+        qrCodeValue: 'PAC-NAV-START-MAIN-ENTRANCE',
+        description: 'Verified QR anchor at the school main entrance. Start navigation here.',
+        buildingId: mainBuilding.id,
+        floorId: mainGroundFloor.id,
+        sortOrder: 1,
+      },
+      {
+        code: 'MAIN_HALLWAY',
+        name: 'Main Hallway',
+        qrCodeValue: 'PAC-NAV-ANCHOR-MAIN-HALLWAY',
+        description: 'Checkpoint QR along the main hallway after entering the building.',
+        buildingId: mainBuilding.id,
+        floorId: mainGroundFloor.id,
+        sortOrder: 2,
+      },
+      {
+        code: 'STAIRS_GROUND_FLOOR',
+        name: 'Stairs Ground Floor',
+        qrCodeValue: 'PAC-NAV-ANCHOR-STAIRS-GROUND',
+        description: 'Checkpoint QR at the ground-floor stairs for future upper-floor routes.',
+        buildingId: mainBuilding.id,
+        floorId: mainGroundFloor.id,
+        sortOrder: 3,
+      },
+    ]).returning();
+    const anchorMap = new Map<string, any>(insertedAnchors.map((anchor: any) => [anchor.code, anchor]));
+
     const insertedCategories = await this.db.select().from(roomCategories) as RoomCategory[];
     const categoryMap = new Map<string, RoomCategory>(insertedCategories.map((item: RoomCategory) => [item.code, item]));
     const buildingMap = new Map<'MAIN' | 'ANNEX', Building>([
@@ -210,6 +252,82 @@ export class DevSeedService {
       }
     }
 
+    const roomMap = new Map<string, any>(insertedRooms.map(room => [room.roomCode, room]));
+    const mainEntrance = anchorMap.get('MAIN_ENTRANCE');
+    const mainHallway = anchorMap.get('MAIN_HALLWAY');
+    const routeSeeds = [
+      {
+        roomCode: 'REGISTRAR',
+        title: 'Main Entrance to Registrar',
+        totalDistanceMeters: 18,
+        finalDistanceMeters: 6,
+        finalDirection: 'left',
+      },
+      {
+        roomCode: 'CASHIER',
+        title: 'Main Entrance to Cashier',
+        totalDistanceMeters: 22,
+        finalDistanceMeters: 10,
+        finalDirection: 'right',
+      },
+      {
+        roomCode: 'BUSINESS-OFFICE',
+        title: 'Main Entrance to Business Office',
+        totalDistanceMeters: 16,
+        finalDistanceMeters: 5,
+        finalDirection: 'left',
+      },
+    ];
+
+    for (const routeSeed of routeSeeds) {
+      const room = roomMap.get(routeSeed.roomCode);
+      if (!room || !mainEntrance || !mainHallway) {
+        continue;
+      }
+
+      const [route] = await this.db.insert(navigationRoutes).values({
+        roomId: room.id,
+        startAnchorId: mainEntrance.id,
+        title: routeSeed.title,
+        description: 'QR-assisted AR indoor navigation using verified anchor points and predefined route steps.',
+        totalDistanceMeters: routeSeed.totalDistanceMeters,
+      }).returning();
+
+      await this.db.insert(navigationRouteSteps).values([
+        {
+          routeId: route.id,
+          stepOrder: 1,
+          fromAnchorId: mainEntrance.id,
+          toAnchorId: mainHallway.id,
+          instruction: 'Start at the Main Entrance QR point and walk forward into the main hallway.',
+          helperText: 'Keep the phone upright. The AR overlay shows the direction, while the QR confirms the starting anchor.',
+          arrowDirection: 'forward',
+          distanceMeters: 12,
+          checkpointQrValue: mainHallway.qrCodeValue,
+          isCheckpointRequired: true,
+        },
+        {
+          routeId: route.id,
+          stepOrder: 2,
+          fromAnchorId: mainHallway.id,
+          instruction: `At the Main Hallway checkpoint, turn ${routeSeed.finalDirection} and continue toward ${room.roomName}.`,
+          helperText: `Look for room ${room.roomNumber}. Use the checkpoint scan if tracking becomes uncertain.`,
+          arrowDirection: routeSeed.finalDirection,
+          distanceMeters: routeSeed.finalDistanceMeters,
+          isCheckpointRequired: false,
+        },
+        {
+          routeId: route.id,
+          stepOrder: 3,
+          instruction: `Arrive at ${room.roomName}. Confirm the door sign before ending navigation.`,
+          helperText: 'This final instruction is intentionally human-verifiable for a stable thesis demo.',
+          arrowDirection: 'arrive',
+          distanceMeters: 0,
+          isCheckpointRequired: false,
+        },
+      ]);
+    }
+
     await this.db.insert(qrEntries).values([
       {
         qrCodeValue: SCHOOL_PROFILE.schoolDirectoryQr,
@@ -231,6 +349,30 @@ export class DevSeedService {
         description: 'Shows rooms in the annex building.',
         buildingId: annexBuilding.id,
         scopeType: 'building_directory',
+      },
+      {
+        qrCodeValue: 'PAC-NAV-START-MAIN-ENTRANCE',
+        label: 'Navigation Start - Main Entrance',
+        description: 'Starts QR-assisted AR navigation from the main entrance anchor.',
+        buildingId: mainBuilding.id,
+        floorId: mainGroundFloor.id,
+        scopeType: 'navigation_anchor',
+      },
+      {
+        qrCodeValue: 'PAC-NAV-ANCHOR-MAIN-HALLWAY',
+        label: 'Navigation Checkpoint - Main Hallway',
+        description: 'Confirms progress at the main hallway checkpoint.',
+        buildingId: mainBuilding.id,
+        floorId: mainGroundFloor.id,
+        scopeType: 'navigation_anchor',
+      },
+      {
+        qrCodeValue: 'PAC-NAV-ANCHOR-STAIRS-GROUND',
+        label: 'Navigation Checkpoint - Stairs Ground Floor',
+        description: 'Confirms progress at the ground-floor stairs checkpoint.',
+        buildingId: mainBuilding.id,
+        floorId: mainGroundFloor.id,
+        scopeType: 'navigation_anchor',
       },
     ]);
 

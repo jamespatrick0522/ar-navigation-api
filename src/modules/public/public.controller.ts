@@ -1,5 +1,6 @@
-import {Controller, Get, Param, ParseIntPipe, Query} from '@nestjs/common';
+import {Body, Controller, Get, Param, ParseIntPipe, Post, Query} from '@nestjs/common';
 import {ApiTags} from '@nestjs/swagger';
+import {SaveArNavigationRouteDto} from '../ar-navigation-routes/dto/save-ar-navigation-route.dto';
 import {ListRoomsQueryDto} from '../rooms/dto/list-rooms-query.dto';
 import {PublicService} from './public.service';
 
@@ -26,6 +27,45 @@ export class PublicController {
   @Get('rooms/:id/navigation-preview')
   getNavigationPreview(@Param('id', ParseIntPipe) id: number) {
     return this.publicService.getNavigationPreview(id);
+  }
+
+  @Get('rooms/:id/navigation-route')
+  getRoomNavigationRoute(
+    @Param('id', ParseIntPipe) id: number,
+    @Query('startAnchorCode') startAnchorCode?: string,
+  ) {
+    return this.publicService.getRoomNavigationRoute(id, startAnchorCode);
+  }
+
+  @Get('navigation/ar-routes')
+  getArNavigationRoutes(@Query('startAnchorCode') startAnchorCode?: string) {
+    return this.publicService.getArNavigationRouteSummaries(startAnchorCode);
+  }
+
+  @Get('rooms/:id/ar-navigation-route')
+  getRoomArNavigationRoute(
+    @Param('id', ParseIntPipe) id: number,
+    @Query('startAnchorCode') startAnchorCode?: string,
+  ) {
+    return this.publicService.getRoomArNavigationRoute(id, startAnchorCode);
+  }
+
+  @Post('rooms/:id/ar-navigation-route')
+  saveRoomArNavigationRoute(
+    @Param('id', ParseIntPipe) id: number,
+    @Body() dto: SaveArNavigationRouteDto,
+  ) {
+    return this.publicService.saveRoomArNavigationRoute(id, dto);
+  }
+
+  @Get('navigation/anchors')
+  getNavigationAnchors() {
+    return this.publicService.getNavigationAnchors();
+  }
+
+  @Get('navigation/anchors/qr/:qrCodeValue')
+  getNavigationAnchorByQr(@Param('qrCodeValue') qrCodeValue: string) {
+    return this.publicService.getNavigationAnchorByQr(qrCodeValue);
   }
 
   @Get('categories')

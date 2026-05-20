@@ -10,6 +10,7 @@ import {CategoriesModule} from './modules/categories/categories.module';
 import {QrModule} from './modules/qr/qr.module';
 import {RoomPeopleModule} from './modules/room-people/room-people.module';
 import {NavigationPreviewModule} from './modules/navigation-preview/navigation-preview.module';
+import {NavigationRoutesModule} from './modules/navigation-routes/navigation-routes.module';
 import {DevSeedModule} from './modules/dev-seed/dev-seed.module';
 
 @Module({
@@ -27,6 +28,7 @@ import {DevSeedModule} from './modules/dev-seed/dev-seed.module';
     QrModule,
     RoomPeopleModule,
     NavigationPreviewModule,
+    NavigationRoutesModule,
     DevSeedModule,
   ],
 })
