@@ -1,4 +1,4 @@
-import {BadRequestException, Inject, Injectable, NotFoundException} from '@nestjs/common';
+import {BadRequestException, Inject, Injectable, Logger, NotFoundException} from '@nestjs/common';
 import {and, asc, eq} from 'drizzle-orm';
 import {DRIZZLE_DB} from 'src/db/db.module';
 import {
@@ -11,6 +11,8 @@ import {SaveArNavigationRouteDto} from './dto/save-ar-navigation-route.dto';
 
 @Injectable()
 export class ArNavigationRoutesService {
+  private readonly logger = new Logger(ArNavigationRoutesService.name);
+
   constructor(@Inject(DRIZZLE_DB) private readonly db: any) {}
 
   async getRouteSummaries(startAnchorCode?: string) {
@@ -100,6 +102,8 @@ export class ArNavigationRoutesService {
   }
 
   async saveRoomRoute(roomId: number, dto: SaveArNavigationRouteDto) {
+    this.logger.log(`Saving AR route request for room ${roomId}, anchor ${dto.startAnchorCode}, points ${dto.points?.length ?? 0}`);
+
     if (!dto.points?.length) {
       throw new BadRequestException('At least one AR route point is required');
     }
@@ -175,6 +179,8 @@ export class ArNavigationRoutesService {
         z: point.z,
       })),
     );
+
+    this.logger.log(`Saved AR route ${routeId} for room ${roomId}, anchor ${anchor.code}, points ${sortedPoints.length}`);
 
     return this.getRoomRoute(roomId, anchor.code);
   }

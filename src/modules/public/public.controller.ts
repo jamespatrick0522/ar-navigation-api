@@ -9,6 +9,11 @@ import {PublicService} from './public.service';
 export class PublicController {
   constructor(private readonly publicService: PublicService) {}
 
+  @Get('health')
+  getHealth() {
+    return this.publicService.getHealth();
+  }
+
   @Get('qr/:qrCodeValue')
   getQrEntry(@Param('qrCodeValue') qrCodeValue: string) {
     return this.publicService.getQrEntry(qrCodeValue);

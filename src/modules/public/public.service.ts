@@ -23,6 +23,14 @@ export class PublicService {
     private readonly navigationRoutesService: NavigationRoutesService,
   ) {}
 
+  getHealth() {
+    return {
+      status: 'ok',
+      service: 'ar-navigation-api',
+      timestamp: new Date().toISOString(),
+    };
+  }
+
   getQrEntry(qrCodeValue: string) {
     return this.qrService.getByCode(qrCodeValue);
   }
