@@ -5,6 +5,12 @@ import {Response} from 'express';
 const APP_PACKAGE_NAME = 'com.pacarnavigation';
 const APP_LINK_HOST = 'ar-navigation-api.onrender.com';
 const APP_OPEN_URL = 'https://' + APP_LINK_HOST + '/app/open';
+const APP_DOWNLOAD_URL = 'https://' + APP_LINK_HOST + '/app/download';
+const ANDROID_INTENT_URL = 'intent://app/open#Intent;scheme=https;package=' +
+  APP_PACKAGE_NAME +
+  ';S.browser_fallback_url=' +
+  encodeURIComponent(APP_DOWNLOAD_URL) +
+  ';end';
 
 @Controller()
 export class AppLinksController {
@@ -40,7 +46,7 @@ export class AppLinksController {
       '<main>' +
       '<h1>PAC AR Navigation</h1>' +
       '<p>If the app is installed, this QR link can open it directly. If not, download and install the Android APK first.</p>' +
-      '<a href="' + APP_OPEN_URL + '">Open App</a>' +
+      '<a href="' + ANDROID_INTENT_URL + '">Open App</a>' +
       '<a class="secondary" href="' + downloadHref + '" ' + downloadDisabled + '>' + downloadText + '</a>' +
       '<small>Android may ask for permission to install apps from your browser or file manager. This is normal for APK installs outside Google Play.</small>' +
       '</main>' +
@@ -125,4 +131,5 @@ export class AppLinksController {
       .filter(Boolean);
   }
 }
+
 
