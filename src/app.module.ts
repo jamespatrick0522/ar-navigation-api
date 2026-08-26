@@ -12,6 +12,7 @@ import {RoomPeopleModule} from './modules/room-people/room-people.module';
 import {NavigationPreviewModule} from './modules/navigation-preview/navigation-preview.module';
 import {NavigationRoutesModule} from './modules/navigation-routes/navigation-routes.module';
 import {DevSeedModule} from './modules/dev-seed/dev-seed.module';
+import {AppLinksModule} from './modules/app-links/app-links.module';
 
 @Module({
   imports: [
@@ -29,7 +30,11 @@ import {DevSeedModule} from './modules/dev-seed/dev-seed.module';
     RoomPeopleModule,
     NavigationPreviewModule,
     NavigationRoutesModule,
+    AppLinksModule,
     DevSeedModule,
   ],
 })
 export class AppModule {}
+
+
+
