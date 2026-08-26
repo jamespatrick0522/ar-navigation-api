@@ -6,7 +6,7 @@ const APP_PACKAGE_NAME = 'com.pacarnavigation';
 const APP_LINK_HOST = 'ar-navigation-api.onrender.com';
 const APP_OPEN_URL = 'https://' + APP_LINK_HOST + '/app/open';
 const APP_DOWNLOAD_URL = 'https://' + APP_LINK_HOST + '/app/download';
-const ANDROID_INTENT_URL = 'intent://app/open#Intent;scheme=https;package=' +
+const ANDROID_INTENT_URL = 'intent://open#Intent;scheme=pacarnavigation;package=' +
   APP_PACKAGE_NAME +
   ';S.browser_fallback_url=' +
   encodeURIComponent(APP_DOWNLOAD_URL) +
@@ -131,5 +131,6 @@ export class AppLinksController {
       .filter(Boolean);
   }
 }
+
 
 
