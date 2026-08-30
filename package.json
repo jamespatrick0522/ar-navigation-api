@@ -11,6 +11,7 @@
     "drizzle:generate": "drizzle-kit generate",
     "drizzle:migrate": "drizzle-kit migrate",
     "seed": "ts-node -r tsconfig-paths/register src/scripts/seed.ts",
+    "seed:admins": "ts-node -r tsconfig-paths/register src/scripts/seed-admins.ts",
     "reseed": "ts-node -r tsconfig-paths/register src/scripts/seed.ts",
     "db:up": "docker compose up -d postgres",
     "db:down": "docker compose down",
@@ -47,5 +48,6 @@
     "typescript": "^5.7.2"
   }
 }
+
 
 

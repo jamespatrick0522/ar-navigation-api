@@ -14,8 +14,10 @@ import {
   roomGallery,
   roomPeople,
   rooms,
+  adminUsers,
 } from 'src/db/schema';
 import {DRIZZLE_DB} from 'src/db/db.module';
+import {hashAdminPassword} from '../admin-auth/admin-password';
 
 type SeedRoom = {
   roomName: string;
@@ -65,6 +67,11 @@ const roomSeed: SeedRoom[] = [
   {roomName: 'Audio Visual Room', shortName: 'AVR', headInstructor: null, categoryCode: 'FACILITY', buildingCode: 'ANNEX', floorName: 'Ground Floor', roomNumber: 'A-106'},
 ];
 
+
+const ADMIN_SEED_USERS = [
+  {username: 'pacadmin', displayName: 'PAC Admin', password: 'PacAdmin@2026'},
+  {username: 'demo_admin', displayName: 'Demo Admin', password: 'DemoAdmin@2026'},
+] as const;
 const createRoomCode = (roomName: string) =>
   roomName
     .toUpperCase()
@@ -87,7 +94,17 @@ export class DevSeedService {
     await this.db.delete(floors);
     await this.db.delete(buildings);
     await this.db.delete(roomCategories);
+    await this.db.delete(adminUsers);
 
+
+    await this.db.insert(adminUsers).values(
+      ADMIN_SEED_USERS.map(user => ({
+        username: user.username,
+        displayName: user.displayName,
+        passwordHash: hashAdminPassword(user.password),
+        role: 'admin',
+      })),
+    );
     await this.db.insert(roomCategories).values([
       {code: 'OFFICE', name: 'Office', description: 'Administrative and management offices', iconName: 'briefcase', colorHex: '#0EA5E9'},
       {code: 'SERVICE', name: 'Student Service', description: 'Public support and service rooms', iconName: 'heart', colorHex: '#22C55E'},
@@ -383,3 +400,6 @@ export class DevSeedService {
     };
   }
 }
+
+
+

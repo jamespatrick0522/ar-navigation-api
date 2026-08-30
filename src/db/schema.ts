@@ -201,6 +201,17 @@ export const arNavigationRoutePoints = pgTable('ar_navigation_route_points', {
   ),
 }));
 
+
+export const adminUsers = pgTable('admin_users', {
+  id: serial('id').primaryKey(),
+  username: varchar('username', {length: 80}).notNull().unique(),
+  displayName: varchar('display_name', {length: 160}).notNull(),
+  passwordHash: varchar('password_hash', {length: 128}).notNull(),
+  role: varchar('role', {length: 40}).default('admin').notNull(),
+  isActive: boolean('is_active').default(true).notNull(),
+  lastLoginAt: timestamp('last_login_at', {withTimezone: true}),
+  ...timestamps,
+});
 export type Building = typeof buildings.$inferSelect;
 export type Floor = typeof floors.$inferSelect;
 export type RoomCategory = typeof roomCategories.$inferSelect;
@@ -214,3 +225,5 @@ export type NavigationRoute = typeof navigationRoutes.$inferSelect;
 export type NavigationRouteStep = typeof navigationRouteSteps.$inferSelect;
 export type ArNavigationRoute = typeof arNavigationRoutes.$inferSelect;
 export type ArNavigationRoutePoint = typeof arNavigationRoutePoints.$inferSelect;
+export type AdminUser = typeof adminUsers.$inferSelect;
+

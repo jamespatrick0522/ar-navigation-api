@@ -7,6 +7,7 @@ import {NavigationPreviewModule} from '../navigation-preview/navigation-preview.
 import {NavigationRoutesModule} from '../navigation-routes/navigation-routes.module';
 import {QrModule} from '../qr/qr.module';
 import {RoomsModule} from '../rooms/rooms.module';
+import {AdminAuthModule} from '../admin-auth/admin-auth.module';
 import {PublicController} from './public.controller';
 import {PublicService} from './public.service';
 
@@ -20,8 +21,10 @@ import {PublicService} from './public.service';
     ArNavigationRoutesModule,
     NavigationPreviewModule,
     NavigationRoutesModule,
+    AdminAuthModule,
   ],
   controllers: [PublicController],
   providers: [PublicService],
 })
 export class PublicModule {}
+

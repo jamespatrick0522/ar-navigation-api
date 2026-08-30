@@ -13,6 +13,7 @@ import {NavigationPreviewModule} from './modules/navigation-preview/navigation-p
 import {NavigationRoutesModule} from './modules/navigation-routes/navigation-routes.module';
 import {DevSeedModule} from './modules/dev-seed/dev-seed.module';
 import {AppLinksModule} from './modules/app-links/app-links.module';
+import {AdminAuthModule} from './modules/admin-auth/admin-auth.module';
 
 @Module({
   imports: [
@@ -31,10 +32,12 @@ import {AppLinksModule} from './modules/app-links/app-links.module';
     NavigationPreviewModule,
     NavigationRoutesModule,
     AppLinksModule,
+    AdminAuthModule,
     DevSeedModule,
   ],
 })
 export class AppModule {}
+
 
 
 

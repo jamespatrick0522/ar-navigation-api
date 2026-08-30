@@ -1,7 +1,8 @@
-import {Body, Controller, Get, Param, ParseIntPipe, Post, Query} from '@nestjs/common';
+import {Body, Controller, Get, Param, ParseIntPipe, Post, Query, UseGuards} from '@nestjs/common';
 import {ApiTags} from '@nestjs/swagger';
 import {SaveArNavigationRouteDto} from '../ar-navigation-routes/dto/save-ar-navigation-route.dto';
 import {ListRoomsQueryDto} from '../rooms/dto/list-rooms-query.dto';
+import {AdminAuthGuard} from '../admin-auth/admin-auth.guard';
 import {PublicService} from './public.service';
 
 @ApiTags('Public')
@@ -56,6 +57,7 @@ export class PublicController {
   }
 
   @Post('rooms/:id/ar-navigation-route')
+  @UseGuards(AdminAuthGuard)
   saveRoomArNavigationRoute(
     @Param('id', ParseIntPipe) id: number,
     @Body() dto: SaveArNavigationRouteDto,
@@ -98,3 +100,5 @@ export class PublicController {
     return this.publicService.getFloor(id);
   }
 }
+
+

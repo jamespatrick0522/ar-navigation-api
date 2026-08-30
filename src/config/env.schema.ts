@@ -22,6 +22,8 @@ export const envSchema = z.object({
   DATABASE_URL: z.string().min(1),
   CORS_ORIGIN: z.string().default('*'),
   DATABASE_SSL: booleanFromEnv.default(false),
+  ADMIN_AUTH_SECRET: z.string().optional(),
 });
 
 export type EnvConfig = z.infer<typeof envSchema>;
+
