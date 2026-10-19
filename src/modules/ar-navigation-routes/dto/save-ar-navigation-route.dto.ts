@@ -1,10 +1,11 @@
 import {ApiProperty, ApiPropertyOptional} from '@nestjs/swagger';
-import {IsArray, IsIn, IsNumber, IsOptional, IsString, MaxLength, ValidateNested} from 'class-validator';
+import {ArrayMaxSize, ArrayMinSize, IsArray, IsIn, IsInt, IsNumber, IsOptional, IsString, Max, MaxLength, Min, ValidateNested} from 'class-validator';
 import {Type} from 'class-transformer';
 
 export class SaveArNavigationRoutePointDto {
   @ApiProperty()
-  @IsNumber()
+  @IsInt()
+  @Min(0)
   pointOrder!: number;
 
   @ApiProperty({enum: ['entrance', 'turn', 'stair-start', 'stair-end', 'destination']})
@@ -38,10 +39,20 @@ export class SaveArNavigationRoutePointDto {
 }
 
 export class SaveArNavigationRouteDto {
-  @ApiProperty({default: 'PAC-NAV-START-MAIN-ENTRANCE'})
+  @ApiProperty({default: 'MAIN_ENTRANCE'})
   @IsString()
   @MaxLength(80)
   startAnchorCode!: string;
+
+  @ApiProperty({enum: ['marker-floor-v2']})
+  @IsIn(['marker-floor-v2'])
+  coordinateFrame!: string;
+
+  @ApiProperty({description: 'Vertical distance from the printed marker center to the entrance floor, in meters.'})
+  @IsNumber()
+  @Min(0)
+  @Max(3)
+  markerFloorOffsetMeters!: number;
 
   @ApiPropertyOptional()
   @IsOptional()
@@ -56,6 +67,8 @@ export class SaveArNavigationRouteDto {
 
   @ApiProperty({type: [SaveArNavigationRoutePointDto]})
   @IsArray()
+  @ArrayMinSize(2)
+  @ArrayMaxSize(500)
   @ValidateNested({each: true})
   @Type(() => SaveArNavigationRoutePointDto)
   points!: SaveArNavigationRoutePointDto[];

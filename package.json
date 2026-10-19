@@ -4,6 +4,7 @@
   "private": true,
   "scripts": {
     "build": "nest build",
+    "test:ar-routes": "node --test -r ts-node/register -r tsconfig-paths/register test/ar-navigation-routes.test.ts",
     "start": "nest start",
     "start:dev": "nest start --watch",
     "start:prod": "node dist/src/main.js",
@@ -12,6 +13,7 @@
     "drizzle:migrate": "drizzle-kit migrate",
     "seed": "ts-node -r tsconfig-paths/register src/scripts/seed.ts",
     "seed:admins": "ts-node -r tsconfig-paths/register src/scripts/seed-admins.ts",
+    "seed:minot34-rooms": "ts-node -r tsconfig-paths/register src/scripts/seed-minot34-rooms.ts",
     "reseed": "ts-node -r tsconfig-paths/register src/scripts/seed.ts",
     "db:up": "docker compose up -d postgres",
     "db:down": "docker compose down",

@@ -174,6 +174,8 @@ export const arNavigationRoutes = pgTable('ar_navigation_routes', {
   startAnchorId: integer('start_anchor_id').references(() => navigationAnchors.id).notNull(),
   title: varchar('title', {length: 180}).notNull(),
   description: text('description'),
+  coordinateFrame: varchar('coordinate_frame', {length: 40}).default('legacy-v1').notNull(),
+  markerFloorOffsetMeters: doublePrecision('marker_floor_offset_meters').default(0).notNull(),
   isActive: boolean('is_active').default(true).notNull(),
   ...timestamps,
 }, table => ({
