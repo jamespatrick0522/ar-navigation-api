@@ -18,6 +18,7 @@
     "seed:admins": "ts-node -r tsconfig-paths/register src/scripts/seed-admins.ts",
     "seed:minot34-rooms": "ts-node -r tsconfig-paths/register src/scripts/seed-minot34-rooms.ts",
     "seed:minot34-media": "ts-node -r tsconfig-paths/register src/scripts/seed-minot34-media.ts",
+    "seed:mao-ni-boss": "ts-node -r tsconfig-paths/register src/scripts/seed-minot34-media.ts --source=src/scripts/data/mao-ni-boss-new.json",
     "reseed": "ts-node -r tsconfig-paths/register src/scripts/seed.ts",
     "db:up": "docker compose up -d postgres",
     "db:down": "docker compose down",

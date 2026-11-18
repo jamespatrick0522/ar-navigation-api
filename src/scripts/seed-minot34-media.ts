@@ -141,7 +141,8 @@ export async function importRoomMedia(
 }
 
 async function run() {
-  const source = JSON.parse(await readFile(resolve('src/scripts/data/minot34-public-links.json'), 'utf8')) as Source;
+  const sourcePath = process.argv.find(arg => arg.startsWith('--source='))?.slice('--source='.length) ?? 'src/scripts/data/minot34-public-links.json';
+  const source = JSON.parse(await readFile(resolve(sourcePath), 'utf8')) as Source;
   const staffMode = (process.argv.find(arg => arg.startsWith('--staff-mode='))?.split('=')[1] ?? 'images-only') as StaffMode;
   if (!['images-only', 'primary-keep', 'primary-replace'].includes(staffMode)) throw new Error('Invalid --staff-mode');
   const dryRun = process.argv.includes('--dry-run');
@@ -153,9 +154,7 @@ async function run() {
     const file = await readFile(resolve('public/room-images', `${driveImageId(link)}.jpg`));
     if (file[0] !== 0xff || file[1] !== 0xd8 || file.at(-2) !== 0xff || file.at(-1) !== 0xd9) throw new Error(`Invalid JPEG: ${link}`);
   }
-  const url = new URL(process.env.DATABASE_URL!);
-  if (url.hostname.endsWith('.neon.tech')) url.hostname = url.hostname.replace('-pooler.', '.');
-  const client = new Client({connectionString: url.toString(), connectionTimeoutMillis: 15000});
+  const client = new Client({connectionString: process.env.DATABASE_URL, connectionTimeoutMillis: 15000});
   await client.connect();
   try {
     const db = drizzle(client);

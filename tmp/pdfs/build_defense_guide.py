@@ -108,7 +108,7 @@ def footer(canvas, doc):
     canvas.setFillColor(MUTED)
     canvas.drawRightString(WIDTH - MARGIN, HEIGHT - 25, 'TECHNICAL DEFENSE PREPARATION')
     canvas.line(MARGIN, 37, WIDTH - MARGIN, 37)
-    canvas.drawString(MARGIN, 24, 'Source review: 17 November 2026 | English answers + Bisaya cues')
+    canvas.drawString(MARGIN, 24, 'Updated: 18 November 2026 | English answers + Bisaya cues')
     canvas.drawRightString(WIDTH - MARGIN, 24, str(doc.page))
     canvas.restoreState()
 
@@ -122,9 +122,9 @@ story += [p('24 QUESTIONS | PROJECT-SPECIFIC ANSWERS', 'kicker'),
           p('Our project is a marker-assisted indoor AR navigation prototype for Philippine Advent College. An administrator records a route from a fixed entrance to a selected destination. Guests choose a room, align their phones with the same entrance image marker, and follow floor chevrons. Unity handles the AR experience, while a NestJS API and PostgreSQL store room information and shared route points. Our current demonstration focuses on known, same-floor routes, with explicit recovery when tracking is lost.'),
           p('Explain the two responsibilities', 'h2'), architecture(), Spacer(1, 7),
           p('What you can defend', 'h2'),
-          p('<b>Implemented:</b> directory and person search, admin route recording, database persistence with readback verification, marker-based alignment, and floor chevrons.'),
+          p('<b>Implemented in source:</b> directory and person search, admin route recording, database persistence with readback verification, marker-based alignment, and floor chevrons. Person search and photo serving still require deployment verification.'),
           p('<b>Outside the validated scope:</b> arbitrary starting positions, automatic shortest paths, obstacle avoidance, reliable stairs, and Immersal-based positioning.'),
-          p('Latest checked database snapshot', 'h2'),
+          p('Database snapshot: 17 November 2026', 'h2'),
           table([['Directory rooms', '<b>84</b>'], ['Stored AR routes / route points', '<b>9 / 28</b>'],
                  ['Active assigned-person records', '<b>18</b>'], ['Imported room photos / rooms with those photos', '<b>25 / 22</b>'],
                  ['Imported staff portraits', '<b>2</b>']], [340, CONTENT_WIDTH - 340]),
@@ -194,7 +194,7 @@ refs = [
 ]
 for key, title, url in refs:
     story.append(p(f'<b>[{key}] {escape(title)}</b><br/><link href="{escape(url)}" color="#087F8C">{escape(url)}</link>', 'ref'))
-story += [Spacer(1, 4), p('References checked on 17 November 2026. Immersal is cited only as future-work context; it is not installed in the reviewed application.', 'small')]
+story += [Spacer(1, 4), p('Official links are provided for further study; platform documentation can change. Immersal is cited only as future-work context; it is not installed in the reviewed application.', 'small')]
 
 doc = SimpleDocTemplate(str(OUT), pagesize=A4, rightMargin=MARGIN, leftMargin=MARGIN,
                         topMargin=49, bottomMargin=49, title='PAC AR Navigation - Technical Defense Guide',

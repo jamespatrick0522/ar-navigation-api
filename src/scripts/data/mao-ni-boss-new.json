@@ -1,0 +1,41 @@
+{
+  "sourceWorkbook": "MAO NI BOSS NEW.xlsx",
+  "campusImageSourceUrl": "https://drive.google.com/file/d/1KRIKHhvx6P5ERjRBxn52y9yV-x9_x713/view?usp=drive_link",
+  "rows": [
+    {
+      "sourceRow": 2,
+      "sourceRoom": "GIRLS DORM",
+      "roomCode": "GIRLS-DORM",
+      "personName": null,
+      "roomImageSourceUrl": "https://drive.google.com/file/d/18dxJNj1A16uXYFsCUTt93XMBTfuYfMXn/view?usp=drive_link",
+      "personImageSourceUrl": null
+    },
+    {
+      "sourceRow": 2,
+      "sourceRoom": "GIRLS DORM",
+      "roomCode": "GIRLS-DORM",
+      "personName": null,
+      "roomImageSourceUrl": "https://drive.google.com/file/d/1yF-Pr_DFoaGxEK9w0fzUMnqVae_xlv29/view?usp=drive_link",
+      "personImageSourceUrl": null
+    },
+    {
+      "sourceRow": 3,
+      "sourceRoom": "BOYS DORM",
+      "roomCode": "BOYS-DORM",
+      "personName": null,
+      "roomImageSourceUrl": "https://drive.google.com/file/d/1srFXSThAoJ9wEVyrw1J_a0ajeDru5tZ3/view?usp=drive_link",
+      "personImageSourceUrl": null
+    },
+    {
+      "sourceRow": 5,
+      "sourceRoom": "NURSING BUILDING AND ROOMS",
+      "roomCode": "NURSING-BUILDING-AND-ROOMS",
+      "personName": null,
+      "roomImageSourceUrl": null,
+      "personImageSourceUrl": null
+    }
+  ],
+  "newRooms": [
+    {"roomCode": "NURSING-BUILDING-AND-ROOMS", "roomName": "Nursing Building and Rooms", "categoryCode": "ACADEMIC"}
+  ]
+}

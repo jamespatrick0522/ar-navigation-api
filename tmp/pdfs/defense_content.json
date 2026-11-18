@@ -1,7 +1,7 @@
 {
   "title": "PAC AR Navigation",
   "subtitle": "Technical Defense Preparation",
-  "date": "17 November 2026",
+  "date": "18 November 2026",
   "sections": [
     {
       "title": "System Design",
@@ -171,9 +171,9 @@
       "questions": [
         {
           "q": "How do person search and room photos relate to navigation?",
-          "a": "The API supports partial, case-insensitive matching of room fields and active assigned-person names or roles. A correlated person lookup keeps each room from appearing multiple times, and matched staff can be shown on the room card. Room photos are stored as image URLs with gallery records and are served as image files by the API. These features describe a destination; they do not create or validate its AR route.",
+          "a": "The current API source supports partial, case-insensitive room search and assigned-person search regardless of role or primary status. All entered name words must match the same active person, so Leodith Rodrigo can match Leodith P. Rodrigo. A correlated lookup avoids duplicate rooms. Photos use stored URLs and gallery records, but uploaded files and static serving must also be deployed. Unity directory thumbnails currently show initials, not room photos. These features describe destinations; they do not calibrate AR routes.",
           "cue": "Ang room information ug larawan dili parehas sa calibrated navigation route.",
-          "follow": "A room becomes navigable only when a usable calibration is available. Public staff information and photos should be approved for the directory.",
+          "follow": "A local test passing does not prove the deployed API or installed APK is updated. The deployment check found person search unavailable and a room photo URL returning 404. Verify the release before demonstrating. Public staff details and photos should be approved.",
           "evidence": "RoomsService.listRooms; matchedPeople; roomGallery; /media/room-images/ static assets."
         },
         {
