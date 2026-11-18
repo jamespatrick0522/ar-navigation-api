@@ -3,6 +3,8 @@ import {ValidationPipe} from '@nestjs/common';
 import {ConfigService} from '@nestjs/config';
 import {DocumentBuilder, SwaggerModule} from '@nestjs/swagger';
 import {AppModule} from './app.module';
+import {NestExpressApplication} from '@nestjs/platform-express';
+import {join} from 'path';
 
 const resolveCorsOrigins = (corsOrigin: string) => {
   if (!corsOrigin || corsOrigin.trim() === '*' || corsOrigin.trim().toLowerCase() === 'mobile') {
@@ -25,8 +27,15 @@ const resolveCorsOrigins = (corsOrigin: string) => {
 };
 
 async function bootstrap() {
-  const app = await NestFactory.create(AppModule);
+  const app = await NestFactory.create<NestExpressApplication>(AppModule);
   const configService = app.get(ConfigService);
+
+  app.useStaticAssets(join(process.cwd(), 'public'), {
+    prefix: '/media/',
+    index: false,
+    dotfiles: 'deny',
+    maxAge: '1h',
+  });
 
   app.enableCors({
     origin: resolveCorsOrigins(configService.get<string>('CORS_ORIGIN', '*')),

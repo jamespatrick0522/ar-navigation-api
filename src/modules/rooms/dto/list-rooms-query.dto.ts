@@ -3,7 +3,7 @@ import {Transform} from 'class-transformer';
 import {IsBoolean, IsInt, IsOptional, IsString, Max, Min} from 'class-validator';
 
 export class ListRoomsQueryDto {
-  @ApiPropertyOptional()
+  @ApiPropertyOptional({description: 'Partial, case-insensitive room name, assigned person name, or assigned role.'})
   @IsOptional()
   @IsString()
   search?: string;

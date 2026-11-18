@@ -1,5 +1,5 @@
 import {Inject, Injectable, NotFoundException} from '@nestjs/common';
-import {and, asc, count, desc, eq, ilike, or, sql} from 'drizzle-orm';
+import {and, asc, count, desc, eq, exists, ilike, inArray, or, sql} from 'drizzle-orm';
 import {DRIZZLE_DB} from 'src/db/db.module';
 import {
   buildings,
@@ -19,14 +19,26 @@ export class RoomsService {
   async listRooms(query: ListRoomsQueryDto) {
     const conditions = [eq(rooms.isActive, true)];
 
-    if (query.search) {
-      const term = `%${query.search}%`;
+    const search = query.search?.trim();
+    const term = search ? `%${search.replace(/[\\%_]/g, '\\$&')}%` : undefined;
+    const nameTerms = search?.split(/\s+/).map(word => `%${word.replace(/[\\%_]/g, '\\$&')}%`) ?? [];
+    // Match all name words on the same person, allowing omitted middle names or initials.
+    const personMatch = term ? or(
+      and(...nameTerms.map(word => ilike(roomPeople.fullName, word))),
+      ilike(roomPeople.roleTitle, term),
+    ) : undefined;
+    if (term) {
       conditions.push(
         or(
           ilike(rooms.roomName, term),
           ilike(rooms.shortName, term),
           ilike(rooms.roomCode, term),
           ilike(rooms.searchableKeywords, term),
+          exists(this.db.select({id: roomPeople.id}).from(roomPeople).where(and(
+            eq(roomPeople.roomId, rooms.id),
+            eq(roomPeople.isActive, true),
+            personMatch,
+          ))),
         )!,
       );
     }
@@ -82,8 +94,20 @@ export class RoomsService {
       .innerJoin(roomCategories, eq(rooms.categoryId, roomCategories.id))
       .where(whereClause);
 
+    const matchedPeople = term && rows.length > 0 ? await this.db
+      .select({id: roomPeople.id, roomId: roomPeople.roomId, fullName: roomPeople.fullName, roleTitle: roomPeople.roleTitle})
+      .from(roomPeople)
+      .where(and(inArray(roomPeople.roomId, rows.map((row: {id: number}) => row.id)), eq(roomPeople.isActive, true), personMatch))
+      .orderBy(desc(roomPeople.isPrimary), asc(roomPeople.fullName), asc(roomPeople.id)) : [];
+    const peopleByRoom = new Map<number, Array<{id: number; fullName: string; roleTitle: string | null}>>();
+    for (const {roomId, ...person} of matchedPeople) {
+      const people = peopleByRoom.get(roomId) ?? [];
+      people.push(person);
+      peopleByRoom.set(roomId, people);
+    }
+
     return {
-      items: rows,
+      items: rows.map((row: {id: number}) => ({...row, matchedPeople: peopleByRoom.get(row.id) ?? []})),
       page: query.page,
       limit: query.limit,
       total,

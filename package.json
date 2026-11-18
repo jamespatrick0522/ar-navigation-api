@@ -5,15 +5,19 @@
   "scripts": {
     "build": "nest build",
     "test:ar-routes": "node --test -r ts-node/register -r tsconfig-paths/register test/ar-navigation-routes.test.ts",
+    "test:room-search": "node --test -r ts-node/register -r tsconfig-paths/register test/room-search.test.ts",
+    "test:room-media": "node --test -r ts-node/register -r tsconfig-paths/register test/room-media.test.ts",
     "start": "nest start",
     "start:dev": "nest start --watch",
     "start:prod": "node dist/src/main.js",
     "lint": "eslint \"src/**/*.ts\"",
     "drizzle:generate": "drizzle-kit generate",
     "drizzle:migrate": "drizzle-kit migrate",
+    "drizzle:studio": "drizzle-kit studio",
     "seed": "ts-node -r tsconfig-paths/register src/scripts/seed.ts",
     "seed:admins": "ts-node -r tsconfig-paths/register src/scripts/seed-admins.ts",
     "seed:minot34-rooms": "ts-node -r tsconfig-paths/register src/scripts/seed-minot34-rooms.ts",
+    "seed:minot34-media": "ts-node -r tsconfig-paths/register src/scripts/seed-minot34-media.ts",
     "reseed": "ts-node -r tsconfig-paths/register src/scripts/seed.ts",
     "db:up": "docker compose up -d postgres",
     "db:down": "docker compose down",
@@ -50,6 +54,3 @@
     "typescript": "^5.7.2"
   }
 }
-
-
-

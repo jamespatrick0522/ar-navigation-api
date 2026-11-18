@@ -1,0 +1,217 @@
+{
+  "sourceWorkbook": "MINOT34_PUBLIC_LINKS.xlsx",
+  "sheet": "Sheet1",
+  "rows": [
+    {
+      "sourceRow": 2,
+      "sourceRoom": "BPA",
+      "roomCode": "BPA-DEPARTMENT",
+      "personName": "RHENJEL O. PAGLINAWAN",
+      "roomImageSourceUrl": "https://drive.google.com/file/d/1yT0sgrllDH6t3EK1-tNciJHFjphono5y/view?usp=drive_link",
+      "personImageSourceUrl": null
+    },
+    {
+      "sourceRow": 3,
+      "sourceRoom": "ELEMENTARY PRINCIPAL",
+      "roomCode": "ELEMENTARY-PRINCIPAL-S-OFFICE",
+      "personName": "LOVELY CHARM B. LUMOCSO",
+      "roomImageSourceUrl": "https://drive.google.com/file/d/1EP___EnEDuIYpsFZCWDi_RjI9NJ8qTU-/view?usp=drive_link",
+      "personImageSourceUrl": null
+    },
+    {
+      "sourceRow": 4,
+      "sourceRoom": "VP-SASS",
+      "roomCode": "VP-STUDENT-AFFAIRS-AND-SERVICE-HRMO-OFFICE",
+      "personName": "ATTY,JERRY DALAGAN",
+      "roomImageSourceUrl": "https://drive.google.com/file/d/1ssdfEVD_6BnvMu24SDn5QYf2VXsoU6ba/view?usp=drive_link",
+      "personImageSourceUrl": null
+    },
+    {
+      "sourceRow": 5,
+      "sourceRoom": "HIGHSCHOOL PRINCIPAL",
+      "roomCode": "PRINCIPAL-S-OFFICE",
+      "personName": "RANDY P.INRES",
+      "roomImageSourceUrl": "https://drive.google.com/file/d/16DtNUJcBgmpVSAnonD3SINBJ9DUmD1jw/view?usp=drive_link",
+      "personImageSourceUrl": null
+    },
+    {
+      "sourceRow": 6,
+      "sourceRoom": "COMPUTER STUDIES",
+      "roomCode": "COMPUTER-STUDIES-OFFICE",
+      "personName": "GLADYS PIELAGO",
+      "roomImageSourceUrl": "https://drive.google.com/file/d/1b_AVjz7T6ZskFbGKkq_e8nCgi12pKNk_/view?usp=drive_link",
+      "personImageSourceUrl": null
+    },
+    {
+      "sourceRow": 7,
+      "sourceRoom": "OFFICE OF THE PRESIDENT",
+      "roomCode": "OFFICE-OF-THE-PRESIDENT",
+      "personName": "MARIANO JOAQUIN C. MACIAS JR",
+      "roomImageSourceUrl": "https://drive.google.com/file/d/15XMUPvGdDtltz3sv8mkRpuZXJwDQXXa3/view?usp=drive_link",
+      "personImageSourceUrl": null
+    },
+    {
+      "sourceRow": 8,
+      "sourceRoom": "OFFICE OF THE REGISTRAR",
+      "roomCode": "REGISTRAR",
+      "personName": "JAYPEE BASCAL TORRRENFRANCA",
+      "roomImageSourceUrl": "https://drive.google.com/file/d/1FnLq8ZGhQoNq5ZvjYwck92l4b3K7w6rV/view?usp=drive_link",
+      "personImageSourceUrl": null
+    },
+    {
+      "sourceRow": 9,
+      "sourceRoom": "COLLEGE FACULTY",
+      "roomCode": "COLLEGE-FACULTY",
+      "personName": "CHAMBERLYN I. ABELLERA",
+      "roomImageSourceUrl": null,
+      "personImageSourceUrl": null
+    },
+    {
+      "sourceRow": 11,
+      "sourceRoom": "COMPUTER STUDIES ROOM",
+      "roomCode": "COMPUTER-STUDIES-ROOM",
+      "personName": null,
+      "roomImageSourceUrl": "https://drive.google.com/file/d/1otlXs8v9bMjtA36FhSWCLRYi2t-szFeI/view?usp=drive_link",
+      "personImageSourceUrl": null
+    },
+    {
+      "sourceRow": 12,
+      "sourceRoom": "BPA ROOM",
+      "roomCode": "BPA-ROOM",
+      "personName": null,
+      "roomImageSourceUrl": "https://drive.google.com/file/d/1qvzZgoeGUMs1lY5js8DtbmGa66vPuD42/view?usp=drive_link",
+      "personImageSourceUrl": null
+    },
+    {
+      "sourceRow": 13,
+      "sourceRoom": "SCHOOL OF BUSINESS",
+      "roomCode": "SCHOOL-OF-BUSINESS",
+      "personName": null,
+      "roomImageSourceUrl": "https://drive.google.com/file/d/1VcW6UzOr5XhkuxWzg8q4iOJRiFP5QYOw/view?usp=drive_link",
+      "personImageSourceUrl": null
+    },
+    {
+      "sourceRow": 14,
+      "sourceRoom": "COLLEGE FACULTY",
+      "roomCode": "COLLEGE-FACULTY",
+      "personName": null,
+      "roomImageSourceUrl": "https://drive.google.com/file/d/19XipVmLUIi_wW15l55kOO9EUE1OEBf4k/view?usp=drive_link",
+      "personImageSourceUrl": null
+    },
+    {
+      "sourceRow": 15,
+      "sourceRoom": "ADUDIO VISUAL ROOM",
+      "roomCode": "AUDIO-VISUAL-ROOM",
+      "personName": null,
+      "roomImageSourceUrl": "https://drive.google.com/file/d/1oBtdoV3dwya1YOWg3Yd0JopsqST4abxR/view?usp=drive_link",
+      "personImageSourceUrl": null
+    },
+    {
+      "sourceRow": 16,
+      "sourceRoom": "BSBA ROOM 101",
+      "roomCode": "BSBA-ROOM-101",
+      "personName": null,
+      "roomImageSourceUrl": "https://drive.google.com/file/d/1T8B93AjaA4KIMWOb6bhNFM4h0gcRrjsu/view?usp=drive_link",
+      "personImageSourceUrl": null
+    },
+    {
+      "sourceRow": 17,
+      "sourceRoom": "EDUC ROOM 103",
+      "roomCode": "EDUC-ROOM-103",
+      "personName": null,
+      "roomImageSourceUrl": "https://drive.google.com/file/d/1Hy1SjNGxewFkLmqQOWdCS8ZWjbJAK57x/view?usp=drive_link",
+      "personImageSourceUrl": null
+    },
+    {
+      "sourceRow": 18,
+      "sourceRoom": "SCHOOL OF EDUCATION",
+      "roomCode": "SCHOOL-OF-EDUCATION-OFFICE",
+      "personName": null,
+      "roomImageSourceUrl": "https://drive.google.com/file/d/1zGEXFYZfxT2TC6LcBk465qmRzBUT8ah8/view?usp=drive_link",
+      "personImageSourceUrl": null
+    },
+    {
+      "sourceRow": 19,
+      "sourceRoom": "COMPUTER STUDIES OFFICE",
+      "roomCode": "COMPUTER-STUDIES-OFFICE",
+      "personName": null,
+      "roomImageSourceUrl": "https://drive.google.com/file/d/18X23vH1ER_MQITCvYo6JQzxHtNdHsyPl/view?usp=drive_link",
+      "personImageSourceUrl": null
+    },
+    {
+      "sourceRow": 20,
+      "sourceRoom": "HS COM LAB",
+      "roomCode": "HS-COMPUTER-LABORATORY",
+      "personName": null,
+      "roomImageSourceUrl": "https://drive.google.com/file/d/1gETyCUzjURyUoVcVgIEy65XRX6yNRDm8/view?usp=drive_link",
+      "personImageSourceUrl": null
+    },
+    {
+      "sourceRow": 21,
+      "sourceRoom": "MID WIFERY OFFICE",
+      "roomCode": "MIDWIFERY-OFFICE",
+      "personName": null,
+      "roomImageSourceUrl": "https://drive.google.com/file/d/1to7DefJBpNaYe5lz7V5wEgDjXXBxh-0A/view?usp=drive_link",
+      "personImageSourceUrl": null
+    },
+    {
+      "sourceRow": 22,
+      "sourceRoom": "GRADE 2",
+      "roomCode": "GRADE-2",
+      "personName": null,
+      "roomImageSourceUrl": "https://drive.google.com/file/d/1aVUJ6ivAYl3xKyItlyv6BrKOTxoaHs-s/view?usp=drive_link",
+      "personImageSourceUrl": null
+    },
+    {
+      "sourceRow": 23,
+      "sourceRoom": "PATHFINDER OFFICE",
+      "roomCode": "PATHFINDER-OFFICE",
+      "personName": "ZHYE PAMUNAG",
+      "roomImageSourceUrl": "https://drive.google.com/file/d/18ycgTim8rPtWIQbK-S8EJnL8KvUUV_FY/view?usp=drive_link",
+      "personImageSourceUrl": "https://drive.google.com/file/d/1zV8Ofl-1UN6XrvK70yYLEHs_0JF6PaI_/view?usp=drive_link"
+    },
+    {
+      "sourceRow": 24,
+      "sourceRoom": "BPA DEPARTMENT OFFICE",
+      "roomCode": "BPA-DEPARTMENT-OFFICE",
+      "personName": null,
+      "roomImageSourceUrl": "https://drive.google.com/file/d/1dtX_wyLu_MY-3UcOo8k6F8-qq9wDtQl-/view?usp=drive_link",
+      "personImageSourceUrl": null
+    },
+    {
+      "sourceRow": 25,
+      "sourceRoom": "SCHOOL CLINIC",
+      "roomCode": "SCHOOL-CLINIC",
+      "personName": "ERMELYM BALAWING",
+      "roomImageSourceUrl": "https://drive.google.com/file/d/1bWhmP2u0LjJyvmfZFBN8JTOrhyzx5mrR/view?usp=drive_link",
+      "personImageSourceUrl": "https://drive.google.com/file/d/1w9SbBBDD-VWnoUtLFf0dOk82_dZIBouO/view?usp=drive_link"
+    },
+    {
+      "sourceRow": 26,
+      "sourceRoom": "ELEMENTARY PRINCIPAL",
+      "roomCode": "ELEMENTARY-PRINCIPAL-S-OFFICE",
+      "personName": null,
+      "roomImageSourceUrl": "https://drive.google.com/file/d/1VNJMUieEqodgUy72C1iOfG_7wbimmoRA/view?usp=drive_link",
+      "personImageSourceUrl": null
+    },
+    {
+      "sourceRow": 27,
+      "sourceRoom": "PRINCIPAL OFFICE",
+      "roomCode": "PRINCIPAL-S-OFFICE",
+      "personName": null,
+      "roomImageSourceUrl": "https://drive.google.com/file/d/1xkC9Ibh0v2njIO_D11wdqdUYKLiGoP3s/view?usp=drive_link",
+      "personImageSourceUrl": null
+    },
+    {
+      "sourceRow": 28,
+      "sourceRoom": "MID WIFERY SKILL OFFICE",
+      "roomCode": "MIDWIFERY-SKILLS-LABORATORY",
+      "personName": null,
+      "roomImageSourceUrl": "https://drive.google.com/file/d/1D_DD2OZvGcWCAHruSLxRGxA-LbdVEXKN/view?usp=drive_link",
+      "personImageSourceUrl": null
+    }
+  ],
+  "newRooms": [
+    {"roomCode": "SCHOOL-OF-BUSINESS", "roomName": "School of Business", "categoryCode": "ACADEMIC"}
+  ]
+}

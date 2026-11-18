@@ -1,0 +1,223 @@
+{
+  "title": "PAC AR Navigation",
+  "subtitle": "Technical Defense Preparation",
+  "date": "17 November 2026",
+  "sections": [
+    {
+      "title": "System Design",
+      "subtitle": "Explain the problem, architecture, and choice of tools.",
+      "questions": [
+        {
+          "q": "What problem does your application solve?",
+          "a": "Our application helps visitors find school rooms and offices through a searchable directory and camera-based AR guidance. An administrator records a route from a fixed entrance to a destination. A guest selects that destination, aligns the phone with the entrance image marker, and follows floor chevrons. The demonstrated scope is predefined indoor routes, not unrestricted navigation throughout the entire campus.",
+          "cue": "Known entrance ug verified nga ruta ang among scope, dili automatic navigation bisan asa.",
+          "follow": "If asked about Google Maps: our prototype provides room-level school information and a prepared indoor AR route; it does not compete with global map coverage.",
+          "evidence": "ARNavigationController.cs: StartRoomCalibration, StartNavigation; RoomsService.listRooms."
+        },
+        {
+          "q": "How is the system organized, and why separate the backend?",
+          "a": "The Android client uses Unity C#, AR Foundation, and ARCore for the AR experience. A NestJS TypeScript API handles directory records, admin authentication, and route persistence. PostgreSQL stores relational data through Drizzle ORM, and the API is hosted on Render. Separating these responsibilities lets phones share published routes while keeping camera tracking and rendering on each device.",
+          "cue": "Ang phone maoy mo-track ug mo-render; ang API ug database maoy motipig ug mo-share sa data.",
+          "follow": "A server health response alone does not prove a calibration was saved. We verify the route data itself through a fresh API read.",
+          "evidence": "ProjectVersion.txt; Packages/manifest.json; src/main.ts; src/db/schema.ts."
+        },
+        {
+          "q": "Why did you move from React Native to Unity?",
+          "a": "The original React Native application provided the directory interface. We moved the AR demonstration to Unity so camera tracking, tracked images, anchors, and 3D chevrons could be managed in a dedicated AR workflow. AR Foundation provides Unity's AR interface, and the ARCore provider supplies Android tracking. This is a project-specific engineering choice, not proof that React Native can never support AR.",
+          "cue": "Mas diretso namo ma-manage ang AR lifecycle sa Unity; dili pasabot nga dili gyud mahimo sa React Native.",
+          "follow": "We use existing AR libraries. We did not implement a new SLAM engine or train a positioning model.",
+          "evidence": "Unity runtime scripts; manifest dependencies: AR Foundation 6.4.3 and ARCore XR Plugin 6.4.3."
+        }
+      ]
+    },
+    {
+      "title": "Positioning And Reference Frames",
+      "subtitle": "Be precise about what the camera knows and what the saved route means.",
+      "questions": [
+        {
+          "q": "How does the phone estimate its position indoors?",
+          "a": "ARCore combines camera observations with inertial sensor measurements to estimate camera position and orientation over time. Our app uses that pose; it does not calculate indoor position from GPS or Wi-Fi signal strength. The entrance marker gives the application a known reference for placing the saved route into the current AR session. Tracking quality still depends on the phone and surroundings. [G1]",
+          "cue": "Camera ug motion sensors ang basehan; ang marker maoy reference sa saved route.",
+          "follow": "Recognizing visual features is not the same as recognizing the Registrar or knowing a complete school map.",
+          "evidence": "ARRouteLocalization.cs; ARNavigationController.TryGetCameraPoseInMarkerSpace."
+        },
+        {
+          "q": "Is your entrance marker a QR code?",
+          "a": "The current navigation flow uses a dedicated reference image named MainEntranceARMarker.png, with a configured image size of 15.5 by 15.5 cm. AR image tracking estimates its pose. A QR decoder would instead read an encoded value or URL. Scanning a QR code to download or open the APK is a separate feature and does not establish the route's physical pose. [U2]",
+          "cue": "Lahi ang QR nga pang-download ug ang AR image marker nga pang-align sa navigation.",
+          "follow": "Do not describe the current marker-tracking flow as live QR decoding. Keep the thesis description consistent with the demonstrated build.",
+          "evidence": "MainEntranceImageLibrary.asset; ARRouteLocalization.MarkerPose; MainEntranceARMarker.png."
+        },
+        {
+          "q": "What is the coordinate system used by the stored points?",
+          "a": "Route points are stored in meters relative to a common marker-floor origin, identified as marker-floor-v2. The origin is below the marker center at floor level, with a gravity-aligned orientation derived from the marker. Each phone reconstructs that frame after scanning the same marker. A local point is placed in world space using the origin's rotation and translation: p_world = R_origin * p_route + t_origin.",
+          "cue": "Parehas nga reference ang gamiton sa tanang phones, dili ang random starting position sa matag AR session.",
+          "follow": "Saving XYZ values alone is insufficient unless their reference frame and floor offset are also defined.",
+          "evidence": "ARRouteLocalization.MarkerPose and SyncOrigin; route coordinateFrame and markerFloorOffsetMeters."
+        }
+      ]
+    },
+    {
+      "title": "Calibration",
+      "subtitle": "Separate route recording from finding the entrance again.",
+      "questions": [
+        {
+          "q": "What happens during administrator calibration?",
+          "a": "An admin chooses a room and starts calibration at the fixed entrance marker. The app waits for a stable marker pose, establishes the floor reference, and enables recording. The admin walks the actual route, adds turn points, then saves the destination. The phone converts positions into the shared local frame. This calibrates the route and its reference; it is not a manual calibration of the camera lens.",
+          "cue": "I-align una ang entrance, i-record ang mga liko, dayon i-save ang destination ug hulaton ang server verification.",
+          "follow": "The one-second stability check is a capture heuristic. It is not a claim of one-second localization in every environment or a measured accuracy guarantee.",
+          "evidence": "ARRouteLocalization.StableMarkerSeconds; StartCalibration, AddWaypointHere, SaveDestinationHere."
+        },
+        {
+          "q": "Why do you need floor detection or a measured marker height?",
+          "a": "The image marker can be above the floor, especially when attached to a wall. Its center is not automatically the walking surface. We either detect a horizontal floor or let the admin enter the measured distance from the floor to the marker center. The saved offset lets other phones reconstruct floor-level guidance without assuming every user holds the phone at the same height.",
+          "cue": "Ang sukod kay gikan sa salog ngadto sa sentro sa marker, dili phone height.",
+          "follow": "For the automatic option, point at the real floor, not a table. A marker placed flat on the floor can use a measured offset of zero.",
+          "evidence": "ARRouteLocalization.MeasureFloor, CompleteAlignment; Admin entrance marker height setting."
+        },
+        {
+          "q": "What happens if the marker moves or calibration is inaccurate?",
+          "a": "The saved route assumes that the entrance marker stays in the same physical position and orientation. Moving or rotating it can shift the entire route. A wrong print size or floor offset can also make alignment unreliable. We therefore fix the marker in place, verify the entrance alignment, and recalibrate affected routes when that reference or the physical route changes. An anchor reduces instability but cannot guarantee zero drift. [U1]",
+          "cue": "Kon mausab ang marker o agianan, kinahanglan i-verify ug i-calibrate pag-usab ang apektadong routes.",
+          "follow": "Do not promise centimeter-level accuracy without field measurements. Stability thresholds in code are not navigation error measurements.",
+          "evidence": "15.5 cm reference image size; marker-floor-v2 metadata; ARRouteLocalization."
+        }
+      ]
+    },
+    {
+      "title": "Route Logic",
+      "subtitle": "Describe the algorithm that exists, rather than a future routing engine.",
+      "questions": [
+        {
+          "q": "Do you use A*, Dijkstra, or a shortest-path algorithm?",
+          "a": "The current implementation replays an administrator-recorded polyline: entrance, ordered turn points, and destination. It does not run A* or Dijkstra, and it does not claim that the recorded route is mathematically shortest. The administrator chooses and validates the walking path. A building graph and pathfinding algorithm would be a future extension for multiple entrances, alternative routes, and route selection from a known current position.",
+          "cue": "Predefined waypoint route ni, dili pa automatic shortest-path computation.",
+          "follow": "Installing Unity's AI Navigation package does not prove that this app uses NavMesh pathfinding. The actual route code is the evidence.",
+          "evidence": "ARNavigationController.BuildRenderPoints and CreateSegment; saved pointOrder values."
+        },
+        {
+          "q": "How do the arrows know which way to point at a corner?",
+          "a": "For each pair of consecutive route points, the app calculates the direction vector from the first point to the next. It places repeated chevrons along that segment and orients them in that direction. The next segment has its own direction, so the path can turn. Correct corner placement depends on recording turn points along the real walking path; the app does not automatically detect corridor corners or obstacles.",
+          "cue": "Matag segment adunay kaugalingong direction; kinahanglan sakto ang turn points.",
+          "follow": "Current guidance is a visual path. Do not claim automatic obstacle avoidance, spoken turn prompts, or dynamic rerouting unless separately implemented.",
+          "evidence": "CreateSegment, CreateChevron; delta = to - from; Quaternion.LookRotation."
+        },
+        {
+          "q": "Can a guest start at the second door instead of the entrance?",
+          "a": "Not automatically in the current version. Even if the second door lies along a stored route, a new AR session does not know where that door is in the route's coordinate system. The guest must first align with the supported entrance marker. Supporting arbitrary starts requires additional known anchors or mapped localization, plus logic to choose the correct route segment from the recognized position.",
+          "cue": "Ang pag-agi sa route dili pasabot nga nahibalo na ang phone sa iyang exact location.",
+          "follow": "This is a defined scope limitation. Extra checkpoints or visual positioning can address it, but they are not already implemented.",
+          "evidence": "StartAnchorCode MAIN_ENTRANCE; ARRouteLocalization.BeginNavigation; no nearest-segment routing."
+        }
+      ]
+    },
+    {
+      "title": "Persistence And Recovery",
+      "subtitle": "Explain why a saved route and a valid AR alignment are different.",
+      "questions": [
+        {
+          "q": "Why should a route work on another phone or after reopening?",
+          "a": "The server stores route geometry and reference metadata, not a reusable copy of the first phone's temporary AR world. Another phone fetches that route and scans the same entrance marker to reconstruct its alignment. After reopening, the same principle applies: load the saved route, then align again. The new phone should not have to record the route, but it does need a valid physical reference.",
+          "cue": "Saved na ang route, pero kinahanglan gihapon i-align ang bag-ong AR session pinaagi sa marker.",
+          "follow": "Our runtime AR anchor is not a cross-device Cloud Anchor or a permanently saved building map.",
+          "evidence": "LoadRoomRouteForNavigation; ConvertApiRoute; ARRouteLocalization.BeginNavigation."
+        },
+        {
+          "q": "What happens when arrows disappear or tracking is lost?",
+          "a": "The app checks tracking readiness before showing the route. It follows a real AR anchor, avoids continuously rebuilding the path from unreliable marker updates, and hides guidance when alignment is not trustworthy. After a tracking interruption or app backgrounding, the guest is prompted to scan the entrance marker again. If recording was interrupted, the unfinished calibration must restart so points from inconsistent frames are not mixed. [U1]",
+          "cue": "Mas maayo nga ipa-rescan ang marker kaysa magpakita og arrows nga sayop ang alignment.",
+          "follow": "Recovery is a designed behavior, not a promise that drift or temporary tracking loss can never happen.",
+          "evidence": "ARRouteLocalization.IsReady, LoseAlignment, OnApplicationPause; controller calibrationInterrupted guard."
+        },
+        {
+          "q": "Does the application work fully offline?",
+          "a": "Only partially. AR alignment and rendering run on the phone, and a previously confirmed route cached on that phone can be used when a route request fails. However, directory loading, first-time route retrieval, new-device access, and server publication depend on the API. Room photos are also fetched from their URLs. A local calibration draft is not automatically available to other phones until uploaded and verified.",
+          "cue": "Ang cached route mahimo, pero dili pa fully offline ang directory ug first-time setup.",
+          "follow": "A defensible offline demo must confirm that the required route is already cached; do not assume a fresh installation has it.",
+          "evidence": "PlayerPrefs room cache and pending uploads; PublicApiClient; API fallback in LoadRoomRouteForNavigation."
+        }
+      ]
+    },
+    {
+      "title": "Database And Security",
+      "subtitle": "Show what is enforced on the server and acknowledge prototype limitations.",
+      "questions": [
+        {
+          "q": "How do you save calibration without losing an existing route?",
+          "a": "PostgreSQL stores a route header linked to the room and entrance, plus ordered route-point records. Saving uses a transaction: the route header is upserted and its points replaced together, so a failed replacement rolls back. The unique room-and-entrance key prevents duplicate route headers. Unity compares the save response and a fresh API read against the submitted points before marking the route as server-confirmed.",
+          "cue": "Dili igo ang 'request succeeded'; gi-read back ug gi-compare ang route points.",
+          "follow": "The local pending draft is retained if publication cannot be verified. Source tests cover failed replacement rollback.",
+          "evidence": "ArNavigationRoutesService.saveRoomRoute; route unique index; SaveRoomRouteToApi and RouteMatches."
+        },
+        {
+          "q": "How do you prevent guests from changing calibration?",
+          "a": "Guests can browse public directory and route endpoints. Calibration controls are shown only to admins in the app, but the important protection is server-side: the route-save endpoint uses an admin authentication guard. Login produces an HMAC-signed token with an expiration, and the server checks its signature, expiry, and active admin account on protected requests. Hiding a button alone would not protect the database.",
+          "cue": "Dili lang pagtago sa button; ang backend mismo mo-reject sa unauthorized save.",
+          "follow": "The prototype uses a custom signed token, not an implemented OAuth service or a standard JWT authentication stack.",
+          "evidence": "PublicController route-save guard; AdminAuthGuard; AdminAuthService token verification."
+        },
+        {
+          "q": "Is the current authentication production-grade?",
+          "a": "Not yet. The prototype stores salted SHA-256 password hashes and uses signed admin tokens, but a fast general-purpose hash is not the preferred production password-storage method. I would migrate password hashing to Argon2id, require a strong configured signing secret, and improve credential handling. The Unity token is stored in PlayerPrefs, which should not be described as encrypted secure storage. [S1]",
+          "cue": "Naay working access control, pero giila namo ang security hardening nga kinahanglan sa production.",
+          "follow": "Do not claim bcrypt, Argon2id, encrypted PlayerPrefs, or secure-keystore storage as already implemented. Do not expose demo passwords during a public demo.",
+          "evidence": "admin-password.ts; AdminAuthService.tokenSecret; PlayerPrefs admin token storage."
+        }
+      ]
+    },
+    {
+      "title": "Directory And Scope",
+      "subtitle": "Distinguish directory content from validated navigation coverage.",
+      "questions": [
+        {
+          "q": "How do person search and room photos relate to navigation?",
+          "a": "The API supports partial, case-insensitive matching of room fields and active assigned-person names or roles. A correlated person lookup keeps each room from appearing multiple times, and matched staff can be shown on the room card. Room photos are stored as image URLs with gallery records and are served as image files by the API. These features describe a destination; they do not create or validate its AR route.",
+          "cue": "Ang room information ug larawan dili parehas sa calibrated navigation route.",
+          "follow": "A room becomes navigable only when a usable calibration is available. Public staff information and photos should be approved for the directory.",
+          "evidence": "RoomsService.listRooms; matchedPeople; roomGallery; /media/room-images/ static assets."
+        },
+        {
+          "q": "Can the app handle stairs and wheelchair-accessible routing?",
+          "a": "Reliable multi-floor navigation is not part of the current validated scope. There are experimental stair controls and point types, but current point recording flattens vertical coordinates for the floor path. That is insufficient for trustworthy stair geometry or floor transitions. The app also does not compute wheelchair-accessible alternatives. Larger text and buttons improve readability, but they do not establish an accessible-route planning capability.",
+          "cue": "Same-floor route una ang i-defend; ang stairs ug accessible routing dili pa validated.",
+          "follow": "Do not demonstrate stair buttons as proof of a complete multi-floor navigation system.",
+          "evidence": "ARNavigationController.Flatten; stair-start/stair-end prototype; no accessibility routing graph."
+        },
+        {
+          "q": "How many rooms can users actually navigate to?",
+          "a": "The latest checked database snapshot contains 84 directory rooms, 9 stored AR routes, and 28 route points. Those are different measures. A directory entry or room photograph does not mean that the room has a published, valid, physically tested route. We should demonstrate only routes that have been calibrated and checked on site. The newly added School of Business still has its building and floor marked to be confirmed.",
+          "cue": "Dili tanan 84 rooms calibrated. Lahi ang directory coverage ug tested navigation coverage.",
+          "follow": "Refresh these counts before the defense if more routes are added. Nine stored routes is not a measured success rate.",
+          "evidence": "Database verification after the media import, 17 November 2026; calibration summaries and room metadata."
+        }
+      ]
+    },
+    {
+      "title": "Evaluation And Future Work",
+      "subtitle": "Use evidence, measured results, and a realistic development roadmap.",
+      "questions": [
+        {
+          "q": "How do you measure navigation accuracy and reliability?",
+          "a": "Functional tests verify route validation, database rollback, readback matching, search behavior, and import safety. These do not measure physical AR accuracy. For field evaluation, we should repeat a known route on at least two supported phones, measure arrow offset at surveyed checkpoints, record alignment time and completion outcomes, and test restart, backgrounding, and tracking recovery. No verified field-accuracy percentage is supplied by the code audit.",
+          "cue": "Kinahanglan actual trials ug recorded measurements; dili mag-imbento og 99% accuracy.",
+          "follow": "Use your own completed trial results. If measurements are unfinished, describe the protocol as planned work rather than completed evidence.",
+          "evidence": "API regression tests; standalone C# route checks; field-test worksheet in this guide."
+        },
+        {
+          "q": "Will it work on every Android phone, and how do you assess performance?",
+          "a": "No. A working camera alone is insufficient; the phone must support the required ARCore features and the built APK. Results depend on camera quality, sensors, lighting, and processing capacity. The app disables some tracking subsystems after alignment and limits chevrons per segment, but those design choices do not prove a specific frame rate. We should measure FPS, battery or thermal behavior, and tracking recovery on the actual test devices. [G2]",
+          "cue": "I-test sa actual supported phones; ayaw pag-promise nga parehas ang performance sa tanan.",
+          "follow": "Record exact phone models, OS versions, route length, lighting, and test duration. Do not invent minimum RAM or FPS results.",
+          "evidence": "Packages/manifest.json; ARRouteLocalization.CompleteAlignment; CreateSegment; ARCore supported-device documentation."
+        },
+        {
+          "q": "What is your contribution, and would Immersal replace the whole app?",
+          "a": "Our contribution is the school-specific integration: a searchable directory, admin route authoring, shared route persistence, a consistent entrance reference, and AR route presentation. We do not claim to invent SLAM or a new routing algorithm. A future Immersal prototype could add localization against a mapped environment, while reusing directory and route-management features. It would still require mapping, map-coordinate route data, routing logic, and site testing. [I1]",
+          "cue": "Integration ug school workflow ang contribution; ang Immersal kay future positioning option, dili current feature.",
+          "follow": "Keep Immersal, arbitrary-start routing, obstacle avoidance, and fully supported stairs in future work until implemented and tested.",
+          "evidence": "Current Unity package manifest has no Immersal SDK; existing directory/API/AR modules."
+        }
+      ]
+    }
+  ]
+}

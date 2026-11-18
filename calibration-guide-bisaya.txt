@@ -1,0 +1,67 @@
+GIYA SA HUSTONG AR NAVIGATION CALIBRATION
+
+Mao ni ang akong girekomendang proseso para mas tukma ug consistent ang calibration.
+
+1. ANDAMA ANG ENTRANCE MARKER
+
+- Gamita ang MainEntranceARMarker.png, dili ang QR code.
+- Ang mismong marker image kinahanglan 15.5 x 15.5 cm, wala labot ang puti nga margin sa papel.
+- Ibutang kini sa permanente nga posisyon. Ayaw ibalhin o tuyoka human sa calibration.
+- Likayi ang sinaw nga lamination, reflection, ug ngitngit nga lugar.
+
+Sugdi una sa usa ka mubo nga ruta, sama sa Entrance -> Registrar, nga parehas ra ug floor. Ayaw sa apila ang hagdan.
+
+2. SUKDA ANG GITAS-ON SA MARKER
+
+Para mas consistent, labi na kon sinaw o walay klarong texture ang salog:
+
+1. Sukda gikan sa salog hangtod sa sentro sa marker, dili sa ibabaw o ubos niini.
+2. Ablihi ang Admin -> Entrance marker height.
+3. Isulod ang sukod sa centimeters. Pananglitan, kon 120 cm ang gitas-on, isulod ang 120.
+4. Pislita ang Save Marker Setup.
+
+Kon patag nga gibutang ang marker sa salog, gamita ang 0.
+
+Kon blanko ang field ug imong i-save, automatic floor detection ang gamiton. Kinahanglan pa nimo ipakita ang salog sa camera niana nga paagi.
+
+3. SUGDI ANG CALIBRATION
+
+1. Siguroha nga updated ang APK ug deployed na ang updated API.
+2. Login isip admin.
+3. Adto sa Directory, pilia ang room, dayon Calibrate.
+4. Atubanga ang entrance marker ug hupti nga steady ang phone hangtod makuha kini.
+5. Kon automatic floor detection imong gamit, ipunting dayon ang camera sa aktuwal nga salog, dili sa lamesa o hagdan.
+6. Ayaw una paglakaw hangtod makita ang "Entrance aligned" ug ma-enable ang calibration buttons.
+
+4. LAKAWA ANG RUTA
+
+- Hinay ug normal lang ang lakaw. Likayi ang kalit nga pagtuyok o pag-uyog sa phone.
+- Iatubang ang camera sa imong agianan, nga makita usab ang palibot. Ayaw pirming itutok sa salog o tabuni ang camera.
+- Sundoga ang tinuod nga agianan sa tawo, dili ang pinakaduol nga linya nga moagi sa babag.
+- Sa matag kanto, hunong kadiyot ug pislita ang Add Turn Point sa dapit diin gyud moliko.
+
+Dili kinahanglan nga makita gihapon ang entrance marker samtang naglakaw.
+
+5. I-SAVE ANG DESTINATION
+
+Sa hustong dapit sa destinasyon, sama sa atubangan sa pultahan sa Registrar:
+
+1. Hunong ug hupti nga steady ang phone.
+2. Pislita ang Save Destination.
+3. Hulata ang "Saved to server and verified."
+
+Kon local draft ra o failed ang server save, dili pa kana kumpirmadong magamit sa laing phone. Ayuha ang internet o admin login, dayon gamita ang Retry Save.
+
+6. SULAYI SA IKADUHANG PHONE
+
+Sa guest phone:
+
+1. Ablihi ang samang room ug pislita ang Navigate.
+2. I-scan ang samang entrance marker.
+3. Sundoga ang arrows ug susiha kon sakto ang mga liko ug destinasyon.
+
+Dayon sulayi nga sirad-an ug ablihan pag-usab ang app. I-scan lang pag-usab ang marker; dili kinahanglan mag-calibrate pag-usab.
+
+Kon mawala ang tracking samtang nag-calibrate, balik sa entrance ug i-restart ang wala pa nahuman nga calibration. Kon nag-navigate, balik ug i-scan ang marker aron ma-align pag-usab.
+
+Ayaw sa pag-calibrate sa tanang rooms. Siguroha una nga usa ka ruta molihok sa duha ka phones, human sa app restart, ug sa 20-30 minutos nga pagsulay.
